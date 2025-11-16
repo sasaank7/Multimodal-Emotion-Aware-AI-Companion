@@ -1,0 +1,237 @@
+# Production Configuration for Emotion-Aware AI Companion
+
+# Application Settings
+app:
+  name: "Emotion-Aware AI Companion"
+  version: "2.0.0"
+  debug: false
+  environment: "production"
+
+# Emotion Detection Settings
+emotion_detection:
+  face:
+    enabled: true
+    backend: "opencv"
+    model: "Emotion"
+    detector: "opencv"
+    confidence_threshold: 0.6  # Higher threshold for production
+    update_interval: 1.0
+
+  voice:
+    enabled: true
+    sample_rate: 16000
+    chunk_size: 1024
+    model: "facebook/wav2vec2-large-xlsr-53"
+    confidence_threshold: 0.5
+    buffer_duration: 3.0
+
+  text:
+    enabled: true
+    model: "vader"
+    confidence_threshold: 0.4
+
+# Multimodal Fusion
+fusion:
+  weights:
+    face: 0.4
+    voice: 0.35
+    text: 0.25
+  strategy: "weighted_average"
+  min_confidence: 0.5
+
+# LLM Settings (Production optimized)
+llm:
+  model_name: "microsoft/Phi-3-mini-4k-instruct"
+  model_type: "transformers"
+  device: "auto"
+
+  # Quantization for performance
+  quantization:
+    enabled: true
+    bits: 4  # 4-bit for faster inference
+    compute_dtype: "float16"
+
+  # Generation parameters
+  max_length: 512
+  temperature: 0.7
+  top_p: 0.9
+  top_k: 50
+  repetition_penalty: 1.1
+
+  # Batching
+  batch_size: 4
+  max_concurrent_requests: 10
+
+# FastAPI Settings
+api:
+  host: "0.0.0.0"
+  port: 8000
+  workers: 4
+  reload: false
+  log_level: "info"
+
+  # CORS
+  cors:
+    allow_origins: ["https://yourdomain.com"]
+    allow_credentials: true
+    allow_methods: ["*"]
+    allow_headers: ["*"]
+
+  # Rate limiting
+  rate_limit:
+    enabled: true
+    requests_per_minute: 60
+    burst: 10
+
+  # Authentication
+  auth:
+    enabled: true
+    jwt_secret: "${JWT_SECRET}"
+    jwt_algorithm: "HS256"
+    token_expire_minutes: 60
+
+# Caching
+cache:
+  enabled: true
+  backend: "redis"
+  redis_url: "redis://localhost:6379/0"
+  default_ttl: 3600  # 1 hour
+  model_cache_ttl: 86400  # 24 hours
+
+# Database
+database:
+  type: "postgresql"  # Can use PostgreSQL for production
+  host: "${DB_HOST}"
+  port: 5432
+  name: "${DB_NAME}"
+  user: "${DB_USER}"
+  password: "${DB_PASSWORD}"
+
+  # Fallback to TinyDB if PostgreSQL not available
+  tinydb_path: "data/user_data/production.json"
+
+# Monitoring & Observability
+monitoring:
+  enabled: true
+
+  # Metrics collection
+  metrics:
+    enabled: true
+    interval: 30  # seconds
+    retention_hours: 24
+
+  # Performance monitoring
+  performance:
+    track_requests: true
+    track_system: true
+    track_models: true
+
+  # Alerts
+  alerts:
+    enabled: true
+    cpu_threshold: 85
+    memory_threshold: 90
+    error_rate_threshold: 5.0  # percent
+
+# Logging (Production)
+logging:
+  level: "INFO"
+  format: "json"  # Structured logging for production
+  file: "logs/production.log"
+  console: true
+  max_bytes: 104857600  # 100MB
+  backup_count: 10
+
+  # Log aggregation
+  syslog:
+    enabled: false
+    host: "localhost"
+    port: 514
+
+# Security
+security:
+  # SSL/TLS
+  ssl:
+    enabled: true
+    cert_file: "/path/to/cert.pem"
+    key_file: "/path/to/key.pem"
+
+  # API Keys
+  api_keys:
+    enabled: true
+    require_for_endpoints: ["/api/v1/*"]
+
+  # Content security
+  max_request_size: 10485760  # 10MB
+  max_file_size: 5242880  # 5MB
+
+# Performance Optimization
+performance:
+  # Model loading
+  lazy_load: false
+  cache_models: true
+  use_quantization: true
+
+  # Processing
+  async_processing: true
+  max_workers: 8
+  queue_size: 100
+
+  # Memory management
+  clear_cache_interval: 600
+  gc_threshold: 0.8  # Trigger GC at 80% memory usage
+
+# User Settings
+personalization:
+  enabled: true
+  storage: "postgresql"  # Use PostgreSQL in production
+  max_history_days: 90
+  max_interactions: 10000
+
+# TTS Settings
+tts:
+  enabled: true
+  engine: "pyttsx3"  # Lighter for production
+  cache_enabled: true
+  max_cache_size: 1000
+
+# STT Settings
+stt:
+  enabled: true
+  engine: "google"
+  language: "en-US"
+  timeout: 10
+
+# Recommendations
+recommendations:
+  enabled: true
+  update_interval: 300  # 5 minutes
+  max_recommendations: 5
+
+# Feature Flags
+features:
+  voice_cloning_tts: false
+  music_recommendations: true
+  break_reminders: true
+  breathing_exercises: true
+  export_analytics: true
+  multi_user: true
+
+# Backup & Recovery
+backup:
+  enabled: true
+  interval: 86400  # Daily
+  retention_days: 30
+  destination: "s3://your-bucket/backups"
+
+# Health Checks
+health:
+  enabled: true
+  interval: 30
+  endpoints:
+    - name: "database"
+      check: "db_connection"
+    - name: "cache"
+      check: "redis_connection"
+    - name: "models"
+      check: "model_loaded"

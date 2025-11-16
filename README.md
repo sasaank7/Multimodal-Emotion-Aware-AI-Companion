@@ -4,7 +4,10 @@ A real-time multimodal AI companion that uses **facial emotion detection**, **sp
 
 ![Python](https://img.shields.io/badge/python-3.8%2B-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
-![Status](https://img.shields.io/badge/status-active-success)
+![Status](https://img.shields.io/badge/status-production%20ready-success)
+![API](https://img.shields.io/badge/API-FastAPI-009688)
+![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-2088FF)
+![Docker](https://img.shields.io/badge/Docker-ready-2496ED)
 
 ---
 
@@ -52,6 +55,44 @@ This project demonstrates expertise in:
 - Emotion distribution charts
 - Interaction statistics
 - Response mode indicators
+
+### 6. **Voice Capabilities** 🎤 NEW!
+- **Text-to-Speech**: Emotional voice synthesis with adjustable tone
+- **Speech-to-Text**: Real-time voice input and transcription
+- **Wake Word Detection**: "Hey Companion" activation
+- **Voice Activity Detection**: Intelligent speech detection
+
+### 7. **Production-Ready FastAPI Backend** 🚀 NEW!
+- RESTful API with comprehensive endpoints
+- WebSocket support for real-time communication
+- Auto-generated API documentation (OpenAPI/Swagger)
+- Rate limiting and request throttling
+- JWT authentication and authorization
+- CORS configuration
+
+### 8. **Intelligent Recommendations** 💡 NEW!
+- Activity suggestions based on emotional state
+- Personalized breathing exercises
+- Music recommendations by mood
+- Time-of-day specific suggestions
+- Quick action buttons
+- AI-generated insights from patterns
+
+### 9. **Advanced Analytics & Monitoring** 📊 NEW!
+- Prometheus metrics collection
+- Grafana dashboards
+- Real-time performance monitoring
+- System health checks
+- Error tracking and alerting
+- Request/response analytics
+
+### 10. **Enterprise Features** 🏢 NEW!
+- Model quantization (4-bit/8-bit) for performance
+- Redis caching layer
+- PostgreSQL database support
+- Horizontal and vertical scaling
+- Load balancing ready
+- Blue-green deployment support
 
 ---
 
@@ -215,6 +256,119 @@ Edit `config/config.yaml` to customize:
 - **Personalization**: History retention, storage options
 - **UI/Dashboard**: Visualization settings, update frequencies
 
+For production, use `config/production.yaml` with optimized settings.
+
+---
+
+## 🔌 **API Usage**
+
+### Start the API Server
+
+```bash
+# Development
+uvicorn src.api.main:app --reload --port 8000
+
+# Production
+gunicorn src.api.main:app -w 4 -k uvicorn.workers.UvicornWorker
+```
+
+### API Endpoints
+
+**Emotion Detection:**
+```bash
+curl -X POST http://localhost:8000/api/v1/emotion/text \
+  -d "text=I'm feeling great!" -d "user_id=user123"
+```
+
+**Chat:**
+```bash
+curl -X POST http://localhost:8000/api/v1/chat \
+  -H "Content-Type: application/json" \
+  -d '{"message": "Hello!", "user_id": "user123"}'
+```
+
+**WebSocket:**
+```javascript
+const ws = new WebSocket('ws://localhost:8000/ws/session123');
+ws.send(JSON.stringify({type: 'chat', data: {message: 'Hello!'}}));
+```
+
+**Full API Documentation:** `http://localhost:8000/api/docs`
+
+---
+
+## 🚀 **Production Deployment**
+
+### Quick Deploy with Docker Compose
+
+```bash
+# One-command production deployment
+./scripts/deploy.sh production
+
+# Or manually
+docker-compose -f docker-compose.prod.yml up -d
+```
+
+### Kubernetes Deployment
+
+```bash
+# Deploy to Kubernetes
+kubectl apply -f k8s/
+
+# With Helm
+helm install emotion-ai ./k8s/helm-chart \
+  --values k8s/values-production.yaml
+```
+
+### Environment Variables
+
+Create `.env.production`:
+```bash
+DB_HOST=postgres
+DB_PASSWORD=your_secure_password
+REDIS_URL=redis://redis:6379/0
+JWT_SECRET=your_jwt_secret
+```
+
+### Access Services
+
+- **API**: http://localhost:8000
+- **UI**: http://localhost:8501
+- **API Docs**: http://localhost:8000/api/docs
+- **Prometheus**: http://localhost:9090
+- **Grafana**: http://localhost:3000
+
+**See [Production Guide](docs/PRODUCTION_GUIDE.md) for complete deployment instructions.**
+
+---
+
+## 📚 **Documentation**
+
+- **[API Reference](docs/API.md)** - Complete REST API documentation
+- **[Production Guide](docs/PRODUCTION_GUIDE.md)** - Deployment, scaling, monitoring
+- **[Quick Start](docs/QUICKSTART.md)** - Get started in 5 minutes
+- **Architecture Guide** - System design and components (docs/ARCHITECTURE.md)
+
+---
+
+## 🧪 **Testing**
+
+```bash
+# Run all tests
+pytest tests/ -v
+
+# Run with coverage
+pytest tests/ --cov=src --cov-report=html
+
+# Run specific test file
+pytest tests/test_emotion_detection.py -v
+
+# Run API tests
+pytest tests/test_api.py -v
+```
+
+**CI/CD**: Automated testing with GitHub Actions on every push.
+
 ---
 
 ## 🧪 **Example Use Cases**
@@ -352,18 +506,78 @@ For questions or collaboration opportunities, please open an issue or reach out 
 
 ---
 
+## 💻 **Tech Stack**
+
+### Core Technologies
+- **Python 3.10+**: Modern Python with type hints
+- **PyTorch**: Deep learning framework
+- **Transformers**: HuggingFace models (Phi-3, Wav2Vec2)
+- **FastAPI**: High-performance async API framework
+- **Streamlit**: Interactive UI framework
+
+### Emotion Detection
+- **DeepFace**: Facial emotion recognition
+- **OpenCV**: Computer vision and video processing
+- **MediaPipe**: Face mesh and landmarks
+- **Librosa**: Audio feature extraction
+- **VADER & TextBlob**: Sentiment analysis
+
+### Voice & Speech
+- **Coqui TTS**: Neural text-to-speech
+- **pyttsx3**: Cross-platform TTS
+- **SpeechRecognition**: Speech-to-text
+- **Whisper**: OpenAI speech recognition (optional)
+
+### Data & Storage
+- **PostgreSQL**: Production database
+- **Redis**: Caching and session management
+- **TinyDB**: Lightweight embedded database
+
+### DevOps & Infrastructure
+- **Docker & Docker Compose**: Containerization
+- **Nginx**: Reverse proxy and load balancing
+- **Prometheus & Grafana**: Monitoring and visualization
+- **GitHub Actions**: CI/CD pipeline
+- **Gunicorn**: WSGI HTTP server
+
+### Performance & Optimization
+- **BitsAndBytes**: Model quantization
+- **Optimum**: HuggingFace optimization library
+- **Model caching**: Faster loading
+- **Async processing**: Concurrent request handling
+
+---
+
 ## 🌟 **Portfolio Highlights**
 
 This project demonstrates:
 
-✅ **Advanced ML Skills**: Multimodal learning, deep learning, NLP
-✅ **System Design**: Scalable architecture, modular components
-✅ **Real-time Processing**: Efficient inference pipelines
-✅ **UI/UX Design**: Interactive dashboards, user-friendly interface
-✅ **Software Engineering**: Clean code, documentation, testing
-✅ **Innovation**: Novel emotion-aware AI interactions
+✅ **Advanced ML Skills**: Multimodal learning, deep learning, NLP, audio processing
+✅ **System Design**: Microservices, scalable architecture, API design
+✅ **Real-time Processing**: WebSocket, async operations, streaming inference
+✅ **UI/UX Design**: Interactive dashboards, real-time visualization
+✅ **Software Engineering**: Clean code, comprehensive testing, documentation
+✅ **DevOps**: CI/CD, containerization, monitoring, deployment automation
+✅ **Production Ready**: Security, authentication, rate limiting, caching
+✅ **Performance Optimization**: Model quantization, caching strategies
+✅ **Innovation**: Novel emotion-aware AI interactions with voice
 
-Perfect for showcasing to recruiters in AI/ML, Full-Stack ML Engineering, or Product roles!
+### Perfect For Showcasing To:
+- 🎯 **AI/ML Engineer** roles
+- 🚀 **Full-Stack ML Engineer** positions
+- 💼 **ML Platform Engineer** roles
+- 🏗️ **Applied AI Researcher** positions
+- 📊 **ML Product Engineer** roles
+- 🔬 **Research Engineer** positions
+
+### Key Differentiators:
+- ✨ **Production-ready** with enterprise features
+- 🎙️ **Voice integration** (TTS + STT)
+- 📡 **Real-time API** with WebSocket
+- 📊 **Comprehensive monitoring** and analytics
+- 🔧 **Fully tested** with CI/CD
+- 📚 **Well-documented** with API reference
+- 🚀 **Deploy-ready** with one command
 
 ---
 
