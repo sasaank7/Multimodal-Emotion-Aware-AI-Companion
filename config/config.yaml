@@ -1,0 +1,176 @@
+# Multimodal Emotion-Aware AI Companion Configuration
+
+# Application Settings
+app:
+  name: "Emotion-Aware AI Companion"
+  version: "1.0.0"
+  debug: false
+
+# Emotion Detection Settings
+emotion_detection:
+  # Facial emotion detection
+  face:
+    enabled: true
+    backend: "opencv"  # opencv, ssd, dlib, mtcnn, retinaface
+    model: "Emotion"   # DeepFace emotion model
+    detector: "opencv" # Face detection backend
+    confidence_threshold: 0.5
+    update_interval: 0.5  # seconds
+
+  # Voice emotion detection
+  voice:
+    enabled: true
+    sample_rate: 16000
+    chunk_size: 1024
+    model: "facebook/wav2vec2-large-xlsr-53"
+    confidence_threshold: 0.4
+    buffer_duration: 3.0  # seconds of audio to analyze
+
+  # Text sentiment analysis
+  text:
+    enabled: true
+    model: "vader"  # vader, textblob, or transformer-based
+    confidence_threshold: 0.3
+
+# Multimodal Fusion Settings
+fusion:
+  # Weight for each modality in fusion
+  weights:
+    face: 0.4
+    voice: 0.35
+    text: 0.25
+
+  # Fusion strategy: weighted_average, max_confidence, voting
+  strategy: "weighted_average"
+
+  # Minimum confidence for final emotion
+  min_confidence: 0.4
+
+# LLM Settings
+llm:
+  # Model configuration
+  model_name: "microsoft/Phi-3-mini-4k-instruct"  # or local path
+  model_type: "transformers"  # transformers, llama-cpp
+  device: "auto"  # auto, cpu, cuda
+
+  # Generation parameters
+  max_length: 512
+  temperature: 0.7
+  top_p: 0.9
+  top_k: 50
+  repetition_penalty: 1.1
+
+  # Response modes
+  modes:
+    supportive:
+      temperature: 0.8
+      style: "empathetic and caring"
+    cheerful:
+      temperature: 0.9
+      style: "upbeat and motivating"
+    calm:
+      temperature: 0.6
+      style: "soothing and grounding"
+    concise:
+      temperature: 0.5
+      style: "brief and efficient"
+    neutral:
+      temperature: 0.7
+      style: "professional assistant"
+
+# Adaptive Response System
+adaptive_response:
+  # Emotion to mode mapping
+  emotion_mode_map:
+    sad: "supportive"
+    angry: "calm"
+    fearful: "calm"
+    happy: "cheerful"
+    surprised: "cheerful"
+    neutral: "neutral"
+    disgusted: "supportive"
+
+  # Context window for mood tracking
+  context_window: 10  # number of recent interactions to consider
+
+  # Mood change sensitivity (0-1)
+  mood_sensitivity: 0.3
+
+# User Personalization
+personalization:
+  enabled: true
+  storage: "tinydb"  # tinydb, sqlite, json
+  storage_path: "data/user_data/user_profile.json"
+
+  # Features to track
+  track_mood_history: true
+  track_preferences: true
+  track_interaction_patterns: true
+
+  # History retention
+  max_history_days: 30
+  max_interactions: 1000
+
+# Dashboard & Visualization
+dashboard:
+  # Update intervals
+  emotion_update_interval: 1.0  # seconds
+  mood_chart_update_interval: 5.0  # seconds
+
+  # Visualization settings
+  mood_timeline_window: 60  # minutes
+  emotion_colors:
+    happy: "#FFD700"
+    sad: "#4169E1"
+    angry: "#DC143C"
+    fearful: "#9370DB"
+    surprised: "#FF8C00"
+    neutral: "#808080"
+    disgusted: "#556B2F"
+
+# Audio Settings
+audio:
+  input_device: null  # null for default, or device index
+  channels: 1
+  sample_width: 2
+
+  # Noise reduction
+  noise_reduction:
+    enabled: true
+    stationary: true
+
+# Video Settings
+video:
+  camera_index: 0
+  resolution:
+    width: 640
+    height: 480
+  fps: 30
+
+# Logging
+logging:
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "logs/app.log"
+  console: true
+
+# Performance
+performance:
+  # Model loading
+  lazy_load: false
+  cache_models: true
+
+  # Processing
+  async_processing: true
+  max_workers: 4
+
+  # Memory management
+  clear_cache_interval: 300  # seconds
+
+# Feature Flags
+features:
+  voice_cloning_tts: false
+  music_recommendations: false
+  break_reminders: false
+  breathing_exercises: false
+  export_analytics: true
